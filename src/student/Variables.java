@@ -73,16 +73,19 @@ public class Variables {
 			System.out.println("");
 		}
 	}
-
 	
-	
-	public int sizeHash() { // TODO remove
-		int size = 0;
-		for (Variable v : this.vars) {
-			if (v.getColor().equals("#")) {
-				size++;
+	public String getString() {
+		String s = "";
+		for (int i = 0; i < nbr_rows; i++) {
+			for (int j = 0; j < nbr_cols; j++) {
+				String color = getVar(i, j).getColor();
+				if (color != null) {
+					s += color;
+				}
 			}
+			System.out.println("");
 		}
-		return size;
+		return s;
 	}
+
 }

@@ -13,8 +13,8 @@ public class Solver {
 	private ArrayList<Constraint> colConstraint;
 	private Variables vars;
 	private String defaultColor = "_";
-	private int nbrHash = 0; //TODO REMOVE
-
+	private ArrayList<String> solutions;
+	
 	public Solver(int rows, int cols, ArrayList<Constraint> rowConstraint, ArrayList<Constraint> colConstraint,
 			Variables vars) {
 		this.rows = rows;
@@ -22,11 +22,7 @@ public class Solver {
 		this.rowConstraint = rowConstraint;
 		this.colConstraint = colConstraint;
 		this.vars = vars;
-		
-		for (Constraint c : rowConstraint) {
-			this.nbrHash += c.getNumber();
-		}
-		
+		this.solutions = new ArrayList<String>();
 	}
 	
 	
@@ -40,37 +36,19 @@ public class Solver {
 	private void recur(int ind, Constraint nextRowC, int nextRowC_i) {
 		
 		if (ind >= this.cols * this.rows) {
-			System.out.println("-------------------------------");
-			vars.printState();
+//			System.out.println("-------------------------------");
+//			vars.printState();
+			
+			if (checkRowsCols()) {
+				this.solutions.add(vars.getString());
+				vars.printState();
+			}
 			return;
 		}
 
-		if (nextRowC == null) {
-			nextRowC = this.rowConstraint.get(nextRowC_i);
-		}
-		
-		//TODO: Jump to beginning of next row if rowCon is not this row?
-		
-		
-		
-		if (nextRowC != null) {
-			for (int i = 0; i < nextRowC.getNumber(); i++) {
-				this.vars.setColor(nextRowC.getColor(), ind + i);
-			}
-			
-			if (checkRowsCols() == false) {
-				vars.printState();
-				return;
-			}
-			
-			recur(ind + nextRowC.getNumber(), null, nextRowC_i + 1);
-			
-			// Sets the color to default again.
-			for (int i = 0; i < nextRowC.getNumber(); i++) {
-				this.vars.setColor(this.defaultColor, ind + i);
-			}
-		}
-		
+		this.vars.setColor("#", ind);
+		recur(ind + 1, null, nextRowC_i + 1);
+		this.vars.setColor("_", ind);
 		recur(ind + 1, nextRowC, nextRowC_i);
 	}
 	
