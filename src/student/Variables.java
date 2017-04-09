@@ -40,6 +40,26 @@ public class Variables {
 		return this.vars.get(ind);
 	}
 	
+	public ArrayList<Variable> getRow(int row_i) {
+		ArrayList<Variable> row_vars = new ArrayList<Variable>();
+		for (Variable v : vars) {
+			if (v.getRow() == row_i) {
+				row_vars.add(v);
+			}
+		}
+		return row_vars;
+	}
+	
+	public ArrayList<Variable> getCol(int col_i) {
+		ArrayList<Variable> col_vars = new ArrayList<Variable>();
+		for (Variable v : vars) {
+			if (v.getCol() == col_i) {
+				col_vars.add(v);
+			}
+		}
+		return col_vars;
+	}
+	
 	
 
 	public void printState() {
@@ -54,13 +74,7 @@ public class Variables {
 		}
 	}
 
-	public ArrayList<Variable> getCol(int col_i) {
-		ArrayList<Variable> col_vars = new ArrayList<Variable>();
-		for (int i = 0; i < this.nbr_rows; i++) {
-			col_vars.add(vars.get(i * this.nbr_cols + col_i));
-		}
-		return col_vars;
-	}
+	
 	
 	public int sizeHash() { // TODO remove
 		int size = 0;
