@@ -13,6 +13,7 @@ public class Solver {
 	private ArrayList<Constraint> colConstraint;
 	private Variables vars;
 	private String defaultColor = "_";
+	private int nbrHash = 0; //TODO REMOVE
 
 	public Solver(int rows, int cols, ArrayList<Constraint> rowConstraint, ArrayList<Constraint> colConstraint,
 			Variables vars) {
@@ -21,6 +22,11 @@ public class Solver {
 		this.rowConstraint = rowConstraint;
 		this.colConstraint = colConstraint;
 		this.vars = vars;
+		
+		for (Constraint c : rowConstraint) {
+			this.nbrHash += c.getNumber();
+		}
+		
 	}
 	
 	
@@ -33,9 +39,34 @@ public class Solver {
 	
 	private void recur(int ind, Constraint nextRowC, int nextRowC_i) {
 		
+		
+	
+//		if (
+//				vars.getVar(3).getColor() != null && vars.getVar(3).getColor().equals("#") &&
+//				vars.getVar(4).getColor() != null && vars.getVar(4).getColor().equals("#") &&
+//				vars.getVar(10).getColor() != null && vars.getVar(10).getColor().equals("#") &&
+//				vars.getVar(12).getColor() != null && vars.getVar(12).getColor().equals("#") &&
+//				vars.getVar(18).getColor() != null && vars.getVar(18).getColor().equals("#") &&
+//				vars.getVar(20).getColor() != null && vars.getVar(20).getColor().equals("#") &&
+//				vars.getVar(26).getColor() != null && vars.getVar(26).getColor().equals("#") &&
+//				vars.getVar(27).getColor() != null && vars.getVar(27).getColor().equals("#") &&
+//				vars.getVar(28).getColor() != null && vars.getVar(28).getColor().equals("#") &&
+//				vars.getVar(29).getColor() != null && vars.getVar(29).getColor().equals("#") &&
+//				vars.getVar(31).getColor() != null && vars.getVar(31).getColor().equals("#")
+//				
+//				) {
+//			System.out.println("-------------------------------");
+//			vars.printState();
+//			
+//		}
+		
+		
 		if (ind >= this.cols * this.rows) {
 //			System.out.println("-------------------------------");
 //			vars.printState();
+			
+			
+			
 			return;
 		}
 		
@@ -66,7 +97,7 @@ public class Solver {
 			}
 		}
 		
-		this.vars.setColor("_", ind);
+		this.vars.setColor(this.defaultColor, ind);
 		recur(ind + 1, nextRowC, nextRowC_i);
 		this.vars.setColor(null, ind);
 		
@@ -97,10 +128,57 @@ public class Solver {
 		
 		
 		for (int j = 0; j < nextRowC.getNumber(); j++) {
-//			System.out.println(nextRowC.getNumber());
-//			System.out.println("J is " + j);
-//			System.out.println(col_ind);
-//			waitForEnter();
+			
+			// Creates string of the col vars
+//			ArrayList<Variable> col_vars = this.vars.getCol(col_ind);
+//			String colString = "";
+//			for (Variable colVar : col_vars) {
+//				if (colVar.getColor() != null) {
+//					colString += colVar.getColor();
+//				}
+//			}
+//			
+//			String currColor = nextRowC.getColor();
+			
+//			ArrayList<Constraint> col_const = getColConst(col_ind);
+//			int nbr_currColor = 0;
+//			for (Constraint col : col_const) {
+//				if (col.getColor().equals(currColor)) {
+//					nbr_currColor += col.getNumber();
+//				}
+//			}
+//			
+//			// Checks if the board already has enough of current color in current column
+//			if ((colString.length() - colString.replace(currColor, "").length()) >= nbr_currColor) {
+//				return false;
+//			}
+//			
+//			String[] out = colString.split("(?<=(.))(?!\\1)");
+//			
+//			if (out[out.length - 1].contains(currColor)) {
+//				
+//				int const_i = -1; // Constraint index
+//				for (int i = 0; i < out.length; i++) {
+//					if ( !out[i].contains("_") ) {
+//						const_i++;
+//					}
+//				}
+//				
+//				this.vars.printState();
+//				System.out.println(col_const);
+//				Constraint col_c = col_const.get(const_i);
+//				if (col_c.getNumber() <= out[out.length-1].length()) {
+//					return false;
+//				}
+//			}
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			// Creates string of the col vars
 			ArrayList<Variable> col_vars = this.vars.getCol(col_ind);
@@ -111,39 +189,84 @@ public class Solver {
 				}
 			}
 			
-			String currColor = nextRowC.getColor();
 			
-			ArrayList<Constraint> col_const = getColConst(col_ind);
-			int nbr_currColor = 0;
-			for (Constraint col : col_const) {
-				if (col.getColor().equals(currColor)) {
-					nbr_currColor += col.getNumber();
-				}
-			}
 			
-			// Checks if the board already has enough of current color in current column
-			if ((colString.length() - colString.replace(currColor, "").length()) >= nbr_currColor) {
-				return false;
-			}
-			
+			// Check number of color groups
 			String[] out = colString.split("(?<=(.))(?!\\1)");
-			
-			if (out[out.length - 1].contains(currColor)) {
-				
-				int const_i = -1; // Constraint index
-				for (int i = 0; i < out.length; i++) {
-					if ( !out[i].contains("_") ) {
-						const_i++;
-					}
+			int nbrColorGroups = 0; 
+			for (String color : out) {
+				if ( !color.contains("_") ) {
+					nbrColorGroups++;
 				}
+			}
+			
+			// Check if current colorgroup can add another symbol. Has to check before other TODO
+			ArrayList<Constraint> col_const = getColConst(col_ind);
+			String currColor = nextRowC.getColor();
+			if (out[out.length - 1].contains(currColor)) {
+				vars.printState();
+				Constraint col_c = col_const.get(nbrColorGroups - 1);
 				
-				this.vars.printState();
-				System.out.println(col_const);
-				Constraint col_c = col_const.get(const_i);
 				if (col_c.getNumber() <= out[out.length-1].length()) {
 					return false;
 				}
 			}
+			
+			
+			if (
+					vars.getVar(3).getColor() != null && vars.getVar(3).getColor().equals("#") &&
+					vars.getVar(4).getColor() != null && vars.getVar(4).getColor().equals("#") &&
+					vars.getVar(10).getColor() != null && vars.getVar(10).getColor().equals("#") &&
+					vars.getVar(12).getColor() != null && vars.getVar(12).getColor().equals("#") &&
+					vars.getVar(18).getColor() != null && vars.getVar(18).getColor().equals("#") &&
+					vars.getVar(20).getColor() != null && vars.getVar(20).getColor().equals("#") &&
+					vars.getVar(26).getColor() != null && vars.getVar(26).getColor().equals("#") &&
+					vars.getVar(27).getColor() != null && vars.getVar(27).getColor().equals("#") &&
+					vars.getVar(28).getColor() != null && vars.getVar(28).getColor().equals("#") &&
+					vars.getVar(29).getColor() != null && vars.getVar(29).getColor().equals("#") &&
+					vars.getVar(31).getColor() != null && vars.getVar(31).getColor().equals("#") &&
+					ind == 35
+					
+					) {
+				System.out.println("-------------------------------");
+				vars.printState();
+				
+			}
+			
+			
+			int col_const_nbr = 0;
+			for (Constraint c : col_const) {
+				col_const_nbr += c.getNumber();
+			}
+			// TODO: After other check. It can still fit in the last one
+			if (nbrColorGroups >= col_const_nbr) {
+				return false;
+			}
+			
+			
+			
+			
+			
+			if (
+					vars.getVar(3).getColor() != null && vars.getVar(3).getColor().equals("#") &&
+					vars.getVar(4).getColor() != null && vars.getVar(4).getColor().equals("#") &&
+					vars.getVar(10).getColor() != null && vars.getVar(10).getColor().equals("#") &&
+					vars.getVar(12).getColor() != null && vars.getVar(12).getColor().equals("#") &&
+					vars.getVar(18).getColor() != null && vars.getVar(18).getColor().equals("#") &&
+					vars.getVar(20).getColor() != null && vars.getVar(20).getColor().equals("#") &&
+					vars.getVar(26).getColor() != null && vars.getVar(26).getColor().equals("#") &&
+					vars.getVar(27).getColor() != null && vars.getVar(27).getColor().equals("#") &&
+					vars.getVar(28).getColor() != null && vars.getVar(28).getColor().equals("#") &&
+					vars.getVar(29).getColor() != null && vars.getVar(29).getColor().equals("#") &&
+					vars.getVar(31).getColor() != null && vars.getVar(31).getColor().equals("#") &&
+					ind == 35
+					
+					) {
+				System.out.println("-------------------------------");
+				vars.printState();
+				
+			}
+			
 			
 			col_ind++;
 		}

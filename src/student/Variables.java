@@ -61,4 +61,14 @@ public class Variables {
 		}
 		return col_vars;
 	}
+	
+	public int sizeHash() { // TODO remove
+		int size = 0;
+		for (Variable v : this.vars) {
+			if (v.getColor().equals("#")) {
+				size++;
+			}
+		}
+		return size;
+	}
 }
