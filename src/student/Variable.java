@@ -8,7 +8,7 @@ public class Variable {
 	public Variable(int row, int col) { // TODO: value?
 		this.row = row;
 		this.col = col;
-		this.color = "_";
+		this.color = null;
 	}
 	
 	public String toString() { 
